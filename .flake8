@@ -1,0 +1,6 @@
+[flake8]
+# Reglas de estilo para el proyecto A01797249_A6.2
+max-line-length = 79
+exclude = .git,__pycache__,docs,old,build,dist,venv
+ignore = E203, W503
+max-complexity = 10
