@@ -5,9 +5,9 @@
 Este sistema gestiona hoteles, clientes y reservaciones utilizando persistencia en archivos JSON. Implementa clases en Python con manejo de errores para datos inválidos y sigue los estándares PEP8.
 
 ## Requisitos de Calidad
-- [cite_start]**PEP8**: Verificado con `flake8` y `pylint`.
+- **PEP8**: Verificado con `flake8` y `pylint`.
 - **Pruebas Unitarias**: Implementadas con el módulo `unittest`.
-- [cite_start]**Cobertura**: Mínimo del 85% de líneas de código.
+- **Cobertura**: Mínimo del 85% de líneas de código.
 
 ## Pruebas de Funcionamiento
 1. **Pruebas Unitarias (Automáticas):**
