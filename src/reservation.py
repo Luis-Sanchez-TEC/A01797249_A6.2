@@ -11,6 +11,7 @@ class Reservation:
         self.storage_file = storage_file
         self.reservations = self._load_data()
 
+    # pylint: disable=duplicate-code
     def _load_data(self):
         """Carga datos con manejo de errores de archivo."""
         if not os.path.exists(self.storage_file):

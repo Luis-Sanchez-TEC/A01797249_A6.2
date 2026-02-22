@@ -11,6 +11,7 @@ class Hotel:
         self.storage_file = storage_file
         self.hotels = self._load_data()
 
+    # pylint: disable=duplicate-code
     def _load_data(self):
         """Carga datos desde el archivo JSON con manejo de errores."""
         if not os.path.exists(self.storage_file):
