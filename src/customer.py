@@ -52,7 +52,8 @@ class Customer:
         if customer_id:
             customer = self.customers.get(customer_id)
             if customer:
-                print(f"ID: {customer_id} | Nombre: {customer['name']} | Email: {customer['email']}")
+                print(f"ID: {customer_id} | Nombre: {customer['name']} | "
+                      f"Email: {customer['email']}")
                 return customer
             print(f"Cliente con ID {customer_id} no encontrado.")
             return None
@@ -63,15 +64,18 @@ class Customer:
         else:
             print("--- Lista de Clientes Registrados ---")
             for c_id, info in self.customers.items():
-                print(f"ID: {c_id} | Nombre: {info['name']} | Email: {info['email']}")
+                print(f"ID: {c_id} | Nombre: {info['name']} "
+                      f"| Email: {info['email']}")
         return self.customers
 
-    def modify_customer(self, customer_id, **kwargs):
-        """Modifica la información de un cliente (nombre o email)."""
+    # Ejemplo para Hotel (y hazlo igual para Customer)
+    def modify_customer(self, customer_id, name=None, email=None):
+        """Modifica el nombre o email de un cliente."""
         if customer_id in self.customers:
-            for key, value in kwargs.items():
-                if key in self.customers[customer_id]:
-                    self.customers[customer_id][key] = value
+            if name is not None:
+                self.customers[customer_id]['name'] = name
+            if email is not None:
+                self.customers[customer_id]['email'] = email
             self._save_data()
             return True
         return False

@@ -16,7 +16,7 @@ def main():
     print("\n--- Verificando Persistencia (Carga de Archivo) ---")
     h_sys.display_hotel()
     c_sys.display_customer()
-    r_sys.display_reservations()
+    r_sys.display_reservations(hotels_data=h_sys.hotels, customers_data=c_sys.customers)
     print("------------------------------------------")
     # -----------------------------------------------------------
 
@@ -33,11 +33,20 @@ def main():
     # 4. Operaciones de Reservación
     print("\n--- Sección Reservación ---")
     r_sys.create_reservation("R1", "C1", "H1")
-    print(f"Reservaciones actuales: {r_sys.reservations}")
+    r_sys.display_reservations(reservation_id="R1", hotels_data=h_sys.hotels, customers_data=c_sys.customers)
 
     # 5. Prueba de manejo de errores (Req 5)
     print("\n--- Prueba de Error (Archivo Corrupto) ---")
     _ = Hotel("data/corrupto.json") # Esto debería imprimir un error y continuar
+
+    # 6
+    # Datos despues de operaciones y carga de archivos ---
+    print("\n--- Verificando Persistencia (Carga de Archivo) ---")
+    h_sys.display_hotel()
+    c_sys.display_customer()
+    r_sys.display_reservations(h_sys.hotels, c_sys.customers)
+    print("------------------------------------------")
+    # -----------------------------------------------------------
 
     print("\n=== PRUEBA FINALIZADA ===")
 

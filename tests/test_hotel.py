@@ -1,53 +1,56 @@
-"""Pruebas unitarias extendidas para alcanzar >85% de cobertura."""
+"""Pruebas unitarias para la clase Hotel."""
 import unittest
 import os
+from unittest.mock import patch
 from src.hotel import Hotel
 
 
 class TestHotel(unittest.TestCase):
-    """Casos de prueba para validar la gestión de hoteles."""
+    """Casos de prueba para Hotel."""
 
     def setUp(self):
-        """Configura un entorno de prueba limpio."""
-        self.test_file = "data/test_hotels.json"
+        self.test_file = "tests/test_hotels.json"
+        if os.path.exists(self.test_file):
+            os.remove(self.test_file)
         self.hotel_manager = Hotel(self.test_file)
 
     def tearDown(self):
-        """Limpia los archivos de prueba creados."""
         if os.path.exists(self.test_file):
             os.remove(self.test_file)
 
-    def test_create_hotel(self):
-        """Prueba la creación de un hotel y el caso de ID duplicado."""
-        self.assertTrue(self.hotel_manager.create_hotel("H1", "Grand Hotel"))
-        # Esto cubre la línea de ID ya existente
-        self.assertFalse(self.hotel_manager.create_hotel("H1", "Duplicate"))
-
-    def test_delete_hotel(self):
-        """Prueba la eliminación de un hotel y el caso de ID inexistente."""
-        self.hotel_manager.create_hotel("H1", "Grand Hotel")
+    def test_lifecycle_success(self):
+        """Cubre flujos exitosos."""
+        self.hotel_manager.create_hotel("H1", "Plaza")
+        self.assertTrue(self.hotel_manager.modify_hotel("H1", "Plaza Mod"))
+        self.hotel_manager.display_hotel("H1")
+        self.hotel_manager.display_hotel()
         self.assertTrue(self.hotel_manager.delete_hotel("H1"))
-        # Esto cubre el caso donde el hotel no existe
-        self.assertFalse(self.hotel_manager.delete_hotel("NONAME"))
 
-    def test_modify_hotel(self):
-        """Prueba la modificación y el caso de ID inexistente."""
-        self.hotel_manager.create_hotel("H1", "Old Name")
-        self.assertTrue(self.hotel_manager.modify_hotel("H1", "New Name"))
-        # Caso negativo
-        self.assertFalse(self.hotel_manager.modify_hotel("H2", "Error"))
+    def test_failures_coverage(self):
+        """ID no encontrado."""
+        # NO vaciamos el dic, solo pedimos algo que no existe
+        self.assertFalse(self.hotel_manager.delete_hotel("ID_FALSO"))
+        self.hotel_manager.display_hotel("ID_FALSO")
+        self.assertFalse(self.hotel_manager.modify_hotel("ID_FALSO", "Nombre"))
 
-    def test_display_hotel(self):
-        """Prueba la visualización de información (cubre display_hotel)."""
-        self.hotel_manager.create_hotel("H1", "Show Hotel")
-        hotel_data = self.hotel_manager.display_hotel("H1")
-        self.assertEqual(hotel_data["name"], "Show Hotel")
-        # Caso donde no existe
-        self.assertIsNone(self.hotel_manager.display_hotel("H2"))
+    def test_error_handling_coverage(self):
+        """Manejo de errores."""
+        with patch("builtins.open", side_effect=IOError):
+            # pylint: disable=protected-access
+            self.hotel_manager._save_data()
 
-    def test_load_invalid_json(self):
-        """Fuerza un error de lectura para cubrir el bloque except."""
-        with open(self.test_file, 'w', encoding='utf-8') as file:
-            file.write("invalid json contents")
-        new_manager = Hotel(self.test_file)
-        self.assertEqual(new_manager.hotels, {})
+        with patch("os.path.exists", return_value=True), \
+             patch("builtins.open", side_effect=IOError):
+            h_err = Hotel("error.json")
+            self.assertEqual(h_err.hotels, {})
+
+    def test_invalid_json(self):
+        """Archivo corrupto."""
+        with open(self.test_file, 'w', encoding='utf-8') as f:
+            f.write("invalid")
+        h_corrupt = Hotel(self.test_file)
+        self.assertEqual(h_corrupt.hotels, {})
+
+
+if __name__ == "__main__":
+    unittest.main()

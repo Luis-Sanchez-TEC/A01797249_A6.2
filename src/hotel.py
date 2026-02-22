@@ -66,10 +66,11 @@ class Hotel:
                 print(f"ID: {h_id} | Nombre: {info['name']}")
         return self.hotels
 
-    def modify_hotel(self, hotel_id, new_name):
+    # Ejemplo para Hotel (y hazlo igual para Customer)
+    def modify_hotel(self, hotel_id, name):
         """Modifica el nombre de un hotel."""
         if hotel_id in self.hotels:
-            self.hotels[hotel_id]["name"] = new_name
+            self.hotels[hotel_id]['name'] = name
             self._save_data()
             return True
         return False

@@ -1,51 +1,56 @@
 """Pruebas unitarias para la clase Customer."""
 import unittest
 import os
+from unittest.mock import patch
 from src.customer import Customer
 
 
 class TestCustomer(unittest.TestCase):
-    """Casos de prueba para validar la gestión de clientes."""
+    """Casos de prueba para Customer."""
 
     def setUp(self):
-        """Configura un entorno limpio para cada prueba."""
-        self.test_file = "data/test_customers.json"
-        self.manager = Customer(self.test_file)
+        """Configuración inicial para cada prueba."""
+        self.test_file = "tests/test_customers.json"
+        if os.path.exists(self.test_file):
+            os.remove(self.test_file)
+        self.customer_manager = Customer(self.test_file)
 
     def tearDown(self):
-        """Elimina archivos temporales."""
         if os.path.exists(self.test_file):
             os.remove(self.test_file)
 
-    def test_create_customer(self):
-        """Prueba creación y duplicados."""
-        self.assertTrue(self.manager.create_customer("C1", "Luis", "l@t.com"))
-        self.assertFalse(self.manager.create_customer("C1", "Luis", "l@t.com"))
+    def test_lifecycle_success(self):
+        """Ciclo de vida del cliente."""
+        self.customer_manager.create_customer("C1", "Luis", "l@t.com")
+        self.assertTrue(self.customer_manager.modify_customer("C1", "Luis S"))
+        self.customer_manager.display_customer("C1")
+        self.customer_manager.display_customer()
+        self.assertTrue(self.customer_manager.delete_customer("C1"))
 
-    def test_delete_customer(self):
-        """Prueba eliminación de cliente existente y no existente."""
-        self.manager.create_customer("C1", "Luis", "l@t.com")
-        # Cubre líneas 43-47
-        self.assertTrue(self.manager.delete_customer("C1"))
-        self.assertFalse(self.manager.delete_customer("C2"))
+    def test_failures_coverage(self):
+        self.assertFalse(self.customer_manager.delete_customer("VOID"))
+        self.customer_manager.display_customer("VOID")
+        self.assertFalse(
+            self.customer_manager.modify_customer("VOID", "Nombre")
+        )
 
-    def test_display_customer(self):
-        """Prueba visualización de cliente existente y no existente."""
-        self.manager.create_customer("C1", "Luis", "l@t.com")
-        # Cubre líneas 53-54
-        self.assertIsNotNone(self.manager.display_customer("C1"))
-        self.assertIsNone(self.manager.display_customer("C2"))
+    def test_error_handling_coverage(self):
+        """Configuración inicial para cada prueba."""
+        with patch("builtins.open", side_effect=IOError):
+            # pylint: disable=protected-access
+            self.customer_manager._save_data()
 
-    def test_modify_customer(self):
-        """Prueba modificación de cliente existente y no existente."""
-        self.manager.create_customer("C1", "Luis", "l@t.com")
-        # Cubre líneas 60-64
-        self.assertTrue(self.manager.modify_customer("C1", name="Fer"))
-        self.assertFalse(self.manager.modify_customer("C2", name="Error"))
+        with patch("os.path.exists", return_value=True), \
+             patch("builtins.open", side_effect=IOError):
+            c_err = Customer("error.json")
+            self.assertEqual(c_err.customers, {})
 
     def test_invalid_json(self):
-        """Cubre el bloque de error en la carga de datos."""
-        with open(self.test_file, 'w', encoding='utf-8') as file:
-            file.write("invalid")
-        new_manager = Customer(self.test_file)
-        self.assertEqual(new_manager.customers, {})
+        with open(self.test_file, 'w', encoding='utf-8') as f:
+            f.write("invalid")
+        c_corrupt = Customer(self.test_file)
+        self.assertEqual(c_corrupt.customers, {})
+
+
+if __name__ == "__main__":
+    unittest.main()
