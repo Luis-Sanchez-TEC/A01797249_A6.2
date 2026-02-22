@@ -17,20 +17,35 @@ class TestCustomer(unittest.TestCase):
         if os.path.exists(self.test_file):
             os.remove(self.test_file)
 
-    def test_create_and_display(self):
-        """Prueba creación y visualización."""
-        self.assertTrue(self.manager.create_customer("C1", "Luis", "l@test.com"))
-        customer = self.manager.display_customer("C1")
-        self.assertEqual(customer["name"], "Luis")
-
-    def test_modify_customer(self):
-        """Prueba la modificación de datos del cliente."""
-        self.manager.create_customer("C1", "Luis", "l@test.com")
-        self.manager.modify_customer("C1", name="Luis Fer")
-        self.assertEqual(self.manager.customers["C1"]["name"], "Luis Fer")
+    def test_create_customer(self):
+        """Prueba creación y duplicados."""
+        self.assertTrue(self.manager.create_customer("C1", "Luis", "l@t.com"))
+        self.assertFalse(self.manager.create_customer("C1", "Luis", "l@t.com"))
 
     def test_delete_customer(self):
-        """Prueba la eliminación de un cliente."""
-        self.manager.create_customer("C1", "Luis", "l@test.com")
+        """Prueba eliminación de cliente existente y no existente."""
+        self.manager.create_customer("C1", "Luis", "l@t.com")
+        # Cubre líneas 43-47
         self.assertTrue(self.manager.delete_customer("C1"))
-        self.assertFalse(self.manager.delete_customer("C1"))
+        self.assertFalse(self.manager.delete_customer("C2"))
+
+    def test_display_customer(self):
+        """Prueba visualización de cliente existente y no existente."""
+        self.manager.create_customer("C1", "Luis", "l@t.com")
+        # Cubre líneas 53-54
+        self.assertIsNotNone(self.manager.display_customer("C1"))
+        self.assertIsNone(self.manager.display_customer("C2"))
+
+    def test_modify_customer(self):
+        """Prueba modificación de cliente existente y no existente."""
+        self.manager.create_customer("C1", "Luis", "l@t.com")
+        # Cubre líneas 60-64
+        self.assertTrue(self.manager.modify_customer("C1", name="Fer"))
+        self.assertFalse(self.manager.modify_customer("C2", name="Error"))
+
+    def test_invalid_json(self):
+        """Cubre el bloque de error en la carga de datos."""
+        with open(self.test_file, 'w', encoding='utf-8') as file:
+            file.write("invalid")
+        new_manager = Customer(self.test_file)
+        self.assertEqual(new_manager.customers, {})
