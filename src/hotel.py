@@ -47,13 +47,24 @@ class Hotel:
             return True
         return False
 
-    def display_hotel(self, hotel_id):
-        """Muestra la información de un hotel."""
-        hotel = self.hotels.get(hotel_id)
-        if hotel:
-            print(f"ID: {hotel_id}, Nombre: {hotel['name']}")
-            return hotel
-        return None
+    def display_hotel(self, hotel_id=None):
+        """Muestra la información de un hotel específico o de todos."""
+        if hotel_id:
+            hotel = self.hotels.get(hotel_id)
+            if hotel:
+                print(f"ID: {hotel_id} | Nombre: {hotel['name']}")
+                return hotel
+            print(f"Hotel con ID {hotel_id} no encontrado.")
+            return None
+
+        # Si no hay ID, muestra todos
+        if not self.hotels:
+            print("No hay hoteles registrados.")
+        else:
+            print("--- Lista de Hoteles Registrados ---")
+            for h_id, info in self.hotels.items():
+                print(f"ID: {h_id} | Nombre: {info['name']}")
+        return self.hotels
 
     def modify_hotel(self, hotel_id, new_name):
         """Modifica el nombre de un hotel."""

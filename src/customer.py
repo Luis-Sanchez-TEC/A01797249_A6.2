@@ -47,13 +47,24 @@ class Customer:
             return True
         return False
 
-    def display_customer(self, customer_id):
-        """Muestra la información de un cliente."""
-        customer = self.customers.get(customer_id)
-        if customer:
-            print(f"ID: {customer_id}, Nombre: {customer['name']}")
-            return customer
-        return None
+    def display_customer(self, customer_id=None):
+        """Muestra la información de un cliente específico o de todos."""
+        if customer_id:
+            customer = self.customers.get(customer_id)
+            if customer:
+                print(f"ID: {customer_id} | Nombre: {customer['name']} | Email: {customer['email']}")
+                return customer
+            print(f"Cliente con ID {customer_id} no encontrado.")
+            return None
+
+        # Si no hay ID, muestra todos
+        if not self.customers:
+            print("AVISO: No hay clientes registrados.")
+        else:
+            print("--- Lista de Clientes Registrados ---")
+            for c_id, info in self.customers.items():
+                print(f"ID: {c_id} | Nombre: {info['name']} | Email: {info['email']}")
+        return self.customers
 
     def modify_customer(self, customer_id, **kwargs):
         """Modifica la información de un cliente (nombre o email)."""

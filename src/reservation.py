@@ -42,6 +42,16 @@ class Reservation:
         self._save_data()
         return True
 
+    def display_reservations(self):
+        """Muestra todas las reservaciones registradas."""
+        if not self.reservations:
+            print("AVISO: No hay reservaciones registradas.")
+        else:
+            print("--- Lista de Reservaciones ---")
+            for res_id, info in self.reservations.items():
+                print(f"Reserva: {res_id} | Cliente: {info['customer_id']} | Hotel: {info['hotel_id']}")
+        return self.reservations
+
     def cancel_reservation(self, res_id):
         """Elimina una reservación del sistema."""
         if res_id in self.reservations:

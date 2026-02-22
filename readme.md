@@ -9,8 +9,8 @@ Este sistema gestiona hoteles, clientes y reservaciones utilizando persistencia 
 - **Pruebas Unitarias**: Implementadas con el módulo `unittest`.
 - [cite_start]**Cobertura**: Mínimo del 85% de líneas de código.
 
-## Instrucciones de Ejecución
-
-### 1. Ejecutar Pruebas
-```bash
-python -m unittest discover tests
+## Pruebas de Funcionamiento
+1. **Pruebas Unitarias (Automáticas):**
+   `coverage run -m unittest discover tests`
+2. **Prueba de Integración (Manual):**
+   `python3 main_test.py`
